@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 export async function initiateVapiCall({ to, patientId, metadata }) {
   const apiKey = process.env.VAPI_API_KEY;
   const baseUrl = process.env.VAPI_BASE_URL || "https://api.vapi.ai";

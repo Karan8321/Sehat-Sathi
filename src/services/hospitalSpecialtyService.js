@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 // Very fast local fallback so we never block hospital matching
