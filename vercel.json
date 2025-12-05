@@ -1,9 +1,19 @@
 {
   "version": 2,
+  "env": {
+    "PORT": "3000"
+  },
   "builds": [
     {
       "src": "src/server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "karnataka_semiurban_hospitals_big_dataset.csv",
+          "symptoms_triage_karnataka.csv",
+          "package.json"
+        ]
+      }
     }
   ],
   "routes": [
