@@ -2,6 +2,7 @@
   "name": "medical-triage-voice-ai-backend",
   "version": "1.0.0",
   "description": "Node.js + Express backend for a medical triage voice AI system using Groq and Vapi.",
+  "type": "module",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
