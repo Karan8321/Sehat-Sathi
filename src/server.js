@@ -17,6 +17,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Medical Triage Voice AI Backend", 
+    status: "running",
+    endpoints: {
+      health: "/health",
+      triage: "/api/triage",
+      hospitals: "/api/hospitals",
+      call: "/api/call",
+      alert: "/api/alert",
+      vapi: "/api/vapi/assistant"
+    }
+  });
+});
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
