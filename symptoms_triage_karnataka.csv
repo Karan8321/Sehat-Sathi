@@ -1,0 +1,41 @@
+Symptom_ID,Symptom,Mapped_Specializations,Triage_Steps,District
+SYM001,Chest pain,Cardiology,1. Onset/Severity → 2. Radiation → 3. Breathlessness → 4. ER Referral,Kolar
+SYM002,Chest pain,Cardiology,1. Onset/Severity → 2. Radiation → 3. Breathlessness → 4. ER Referral,Mandya
+SYM003,Chest pain,Cardiology,1. Onset/Severity → 2. Radiation → 3. Breathlessness → 4. ER Referral,Chikkaballapur
+SYM004,Chest pain,Cardiology,1. Onset/Severity → 2. Radiation → 3. Breathlessness → 4. ER Referral,Davangere
+SYM005,Chest pain,Cardiology,1. Onset/Severity → 2. Radiation → 3. Breathlessness → 4. ER Referral,Hassan
+SYM006,Breathlessness,Pulmonology,1. Check O2 → 2. Duration → 3. Triggers → 4. Emergency if needed,Kolar
+SYM007,Breathlessness,Pulmonology,1. Check O2 → 2. Duration → 3. Triggers → 4. Emergency if needed,Mandya
+SYM008,Breathlessness,Pulmonology,1. Check O2 → 2. Duration → 3. Triggers → 4. Emergency if needed,Chikkaballapur
+SYM009,Breathlessness,Pulmonology,1. Check O2 → 2. Duration → 3. Triggers → 4. Emergency if needed,Davangere
+SYM010,Breathlessness,Pulmonology,1. Check O2 → 2. Duration → 3. Triggers → 4. Emergency if needed,Hassan
+SYM011,High fever,General Medicine,1. Temperature → 2. Hydration → 3. Duration → 4. Rash? Urgent care,Kolar
+SYM012,High fever,General Medicine,1. Temperature → 2. Hydration → 3. Duration → 4. Rash? Urgent care,Mandya
+SYM013,High fever,General Medicine,1. Temperature → 2. Hydration → 3. Duration → 4. Rash? Urgent care,Chikkaballapur
+SYM014,High fever,General Medicine,1. Temperature → 2. Hydration → 3. Duration → 4. Rash? Urgent care,Davangere
+SYM015,High fever,General Medicine,1. Temperature → 2. Hydration → 3. Duration → 4. Rash? Urgent care,Hassan
+SYM016,Seizure,Neurology,1. Safety → 2. Duration → 3. Consciousness → 4. Immediate hospital,Kolar
+SYM017,Seizure,Neurology,1. Safety → 2. Duration → 3. Consciousness → 4. Immediate hospital,Mandya
+SYM018,Seizure,Neurology,1. Safety → 2. Duration → 3. Consciousness → 4. Immediate hospital,Chikkaballapur
+SYM019,Seizure,Neurology,1. Safety → 2. Duration → 3. Consciousness → 4. Immediate hospital,Davangere
+SYM020,Seizure,Neurology,1. Safety → 2. Duration → 3. Consciousness → 4. Immediate hospital,Hassan
+SYM021,Abdominal pain,Gastroenterology,1. Pain area → 2. Vomiting? → 3. Hydration → 4. Hospital if severe,Kolar
+SYM022,Abdominal pain,Gastroenterology,1. Pain area → 2. Vomiting? → 3. Hydration → 4. Hospital if severe,Mandya
+SYM023,Abdominal pain,Gastroenterology,1. Pain area → 2. Vomiting? → 3. Hydration → 4. Hospital if severe,Chikkaballapur
+SYM024,Abdominal pain,Gastroenterology,1. Pain area → 2. Vomiting? → 3. Hydration → 4. Hospital if severe,Davangere
+SYM025,Abdominal pain,Gastroenterology,1. Pain area → 2. Vomiting? → 3. Hydration → 4. Hospital if severe,Hassan
+SYM026,Bone fracture,Orthopedics,1. Stabilize → 2. Bleeding → 3. Immobilize → 4. Ortho care,Kolar
+SYM027,Bone fracture,Orthopedics,1. Stabilize → 2. Bleeding → 3. Immobilize → 4. Ortho care,Mandya
+SYM028,Bone fracture,Orthopedics,1. Stabilize → 2. Bleeding → 3. Immobilize → 4. Ortho care,Chikkaballapur
+SYM029,Bone fracture,Orthopedics,1. Stabilize → 2. Bleeding → 3. Immobilize → 4. Ortho care,Davangere
+SYM030,Bone fracture,Orthopedics,1. Stabilize → 2. Bleeding → 3. Immobilize → 4. Ortho care,Hassan
+SYM031,Skin rash,Dermatology,1. Fever check → 2. Allergens → 3. Duration → 4. Dermatology referral,Kolar
+SYM032,Skin rash,Dermatology,1. Fever check → 2. Allergens → 3. Duration → 4. Dermatology referral,Mandya
+SYM033,Skin rash,Dermatology,1. Fever check → 2. Allergens → 3. Duration → 4. Dermatology referral,Chikkaballapur
+SYM034,Skin rash,Dermatology,1. Fever check → 2. Allergens → 3. Duration → 4. Dermatology referral,Davangere
+SYM035,Skin rash,Dermatology,1. Fever check → 2. Allergens → 3. Duration → 4. Dermatology referral,Hassan
+SYM036,Pregnancy pain,OBG,1. Weeks → 2. Bleeding? → 3. Movement → 4. OBG emergency referral,Kolar
+SYM037,Pregnancy pain,OBG,1. Weeks → 2. Bleeding? → 3. Movement → 4. OBG emergency referral,Mandya
+SYM038,Pregnancy pain,OBG,1. Weeks → 2. Bleeding? → 3. Movement → 4. OBG emergency referral,Chikkaballapur
+SYM039,Pregnancy pain,OBG,1. Weeks → 2. Bleeding? → 3. Movement → 4. OBG emergency referral,Davangere
+SYM040,Pregnancy pain,OBG,1. Weeks → 2. Bleeding? → 3. Movement → 4. OBG emergency referral,Hassan

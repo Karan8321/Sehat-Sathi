@@ -1,12 +1,9 @@
 import fetch from "node-fetch";
 
-/**
- * Initiate a Vapi voice call.
- * This is a minimal stub that POSTs to a hypothetical Vapi endpoint.
- */
 export async function initiateVapiCall({ to, patientId, metadata }) {
   const apiKey = process.env.VAPI_API_KEY;
   const baseUrl = process.env.VAPI_BASE_URL || "https://api.vapi.ai";
+  const assistantId = process.env.VAPI_ASSISTANT_ID;
 
   if (!apiKey) {
     const error = new Error("VAPI_API_KEY is not configured");
@@ -14,12 +11,19 @@ export async function initiateVapiCall({ to, patientId, metadata }) {
     throw error;
   }
 
-  const url = `${baseUrl.replace(/\/$/, "")}/v1/calls`;
+  if (!assistantId) {
+    const error = new Error("VAPI_ASSISTANT_ID is not configured");
+    error.status = 500;
+    throw error;
+  }
+
+  const url = `${baseUrl.replace(/\/$/, "")}/call/phone`;
 
   const body = {
-    to,
-    patientId,
-    metadata: metadata || {},
+    phoneNumber: to,
+    assistantId,
+    // optionally pass patientId inside metadata
+    metadata: { ...(metadata || {}), patientId },
   };
 
   const response = await fetch(url, {
@@ -49,5 +53,3 @@ export async function initiateVapiCall({ to, patientId, metadata }) {
     providerResponse: data,
   };
 }
-
-

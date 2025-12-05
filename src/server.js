@@ -3,7 +3,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import triageRouter from "./routes/triage.js";
 import hospitalsRouter from "./routes/hospitals.js";
+import hospitalMatchRouter from "./routes/hospitalMatch.js";
 import callRouter from "./routes/call.js";
+import alertRouter from "./routes/alert.js";
 import { triageAssistantConfig, analyzeTriageWithGroq } from "./vapiConfig.js";
 
 // Load environment variables from .env if present
@@ -22,8 +24,9 @@ app.get("/health", (req, res) => {
 
 // API routes
 app.use("/api/triage", triageRouter);
-app.use("/api/hospitals", hospitalsRouter);
+app.use("/api/hospitals", hospitalsRouter, hospitalMatchRouter);
 app.use("/api/call", callRouter);
+app.use("/api/alert", alertRouter);
 
 // Expose Vapi voice assistant config
 app.get("/api/vapi/assistant", (req, res) => {
@@ -59,6 +62,16 @@ app.post("/api/vapi/triage-analyze", async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+// Fallback 404 handler so unknown routes return JSON, not HTML
+app.use((req, res, next) => {
+  res.status(404).json({
+    error: {
+      message: "Route not found",
+      details: `${req.method} ${req.originalUrl}`,
+    },
+  });
 });
 
 // Global error handler
