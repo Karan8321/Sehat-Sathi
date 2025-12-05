@@ -1,23 +1,13 @@
 {
-  "name": "medical-triage-voice-ai-backend",
+  "name": "sehat-sathi",
   "version": "1.0.0",
-  "description": "Node.js + Express backend for a medical triage voice AI system using Groq and Vapi.",
+  "description": "AI-powered medical triage system with voice capabilities",
   "type": "module",
-  "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "concurrently \"npm --prefix api run dev\" \"npm --prefix frontend run dev\"",
+    "build": "npm --prefix api run build && npm --prefix frontend run build",
+    "start": "npm --prefix api start"
   },
-  "keywords": [
-    "express",
-    "medical",
-    "triage",
-    "voice-ai",
-    "groq",
-    "vapi"
-  ],
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.86.0",
     "cors": "^2.8.5",
@@ -26,6 +16,7 @@
     "nodemailer": "^7.0.11"
   },
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "nodemon": "^3.1.0"
   }
 }

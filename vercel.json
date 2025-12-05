@@ -1,25 +1,23 @@
 {
   "version": 2,
-  "env": {
-    "PORT": "3000"
-  },
   "builds": [
     {
-      "src": "src/server.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "karnataka_semiurban_hospitals_big_dataset.csv",
-          "symptoms_triage_karnataka.csv",
-          "package.json"
-        ]
-      }
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/next"
     }
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "api/index.js"
+    },
+    {
       "src": "/(.*)",
-      "dest": "src/server.js"
+      "dest": "frontend/$1"
     }
   ]
 }
