@@ -102,6 +102,19 @@ app.use((err, req, res, next) => {
 });
 
 // Export a handler function — Vercel invokes the default export as a function
-export default function handler(req, res) {
+// This handler receives the request and response from Vercel's serverless function
+export default async function handler(req, res) {
+  // Vercel passes the request and response directly to Express
   return app(req, res);
+}
+
+// For local development, start the server on port 4000
+// Vercel uses the exported handler function, so this won't interfere
+// Only start server if not running on Vercel (Vercel sets VERCEL env variable)
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`Medical triage voice AI backend running on port ${PORT}`);
+    console.log(`Health check: http://localhost:${PORT}/api/health`);
+  });
 }

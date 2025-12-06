@@ -5,7 +5,14 @@ const nextConfig = {
   reactStrictMode: true,
   // Configure images if needed
   images: {
-    domains: ['localhost'], // Add your image domains here
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   // Handle static exports if needed
   output: 'standalone',

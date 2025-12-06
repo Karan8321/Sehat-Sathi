@@ -9,8 +9,8 @@ export async function getTriageAssessment(input) {
   // Default to a currently supported Groq model; can be overridden via GROQ_MODEL in .env
   const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
-  if (!apiKey) {
-    const error = new Error("GROQ_API_KEY is not configured");
+  if (!apiKey || apiKey === "your_groq_api_key_here" || apiKey.trim() === "") {
+    const error = new Error("GROQ_API_KEY is not configured. Please add your Groq API key to the .env file in the api directory.");
     error.status = 500;
     throw error;
   }
@@ -87,8 +87,8 @@ export async function getNumericUrgencyAssessment(conversation) {
   const apiKey = process.env.GROQ_API_KEY;
   const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
-  if (!apiKey) {
-    const error = new Error("GROQ_API_KEY is not configured");
+  if (!apiKey || apiKey === "your_groq_api_key_here" || apiKey.trim() === "") {
+    const error = new Error("GROQ_API_KEY is not configured. Please add your Groq API key to the .env file in the api directory.");
     error.status = 500;
     throw error;
   }
@@ -186,8 +186,8 @@ export async function chatTriageTurn(messages) {
   const apiKey = process.env.GROQ_API_KEY;
   const model = process.env.GROQ_MODEL || "llama-3.1-8b-instant";
 
-  if (!apiKey) {
-    const error = new Error("GROQ_API_KEY is not configured");
+  if (!apiKey || apiKey === "your_groq_api_key_here" || apiKey.trim() === "") {
+    const error = new Error("GROQ_API_KEY is not configured. Please add your Groq API key to the .env file in the api directory.");
     error.status = 500;
     throw error;
   }

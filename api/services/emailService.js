@@ -9,9 +9,14 @@ function getSmtpConfig() {
   const pass = process.env.SMTP_PASS;
   const from = process.env.EMAIL_FROM || user;
 
-  if (!host || !user || !pass) {
+  // Check if SMTP is configured (not empty and not placeholder values)
+  const hasPlaceholders = user === "your_email@gmail.com" || pass === "your_app_password_here" || pass === "";
+
+  if (!host || !user || !pass || hasPlaceholders) {
     const error = new Error(
-      "SMTP configuration is missing. Please set SMTP_HOST, SMTP_USER, SMTP_PASS in .env"
+      "SMTP configuration is missing or incomplete. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS in .env file. " +
+      "For Gmail: Use an App Password (get it from https://myaccount.google.com/apppasswords). " +
+      "If you don't need email alerts, you can leave these values but the email alert feature will not work."
     );
     error.status = 500;
     throw error;

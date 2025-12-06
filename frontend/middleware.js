@@ -1,3 +1,5 @@
+// Note: Middleware is deprecated in Next.js 16, but keeping for compatibility
+// Consider migrating to proxy configuration if needed
 import { NextResponse } from "next/server";
 
 export function middleware() {

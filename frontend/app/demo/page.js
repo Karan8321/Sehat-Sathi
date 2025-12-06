@@ -110,9 +110,11 @@ const demoHospitalTimeline = [
 
 const totalDemoDuration = 42; // seconds
 
-// For the demo we always talk directly to the Express backend running on 4000.
-// This avoids accidentally calling the Next.js frontend URL, which returns HTML.
-const API_BASE = "http://localhost:4000";
+// API base URL - uses environment variable in production, localhost in development
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 
+                 (typeof window !== "undefined" && window.location.hostname === "localhost" 
+                   ? "http://localhost:4000" 
+                   : "/api");
 
 function levelColor(level) {
   if (level >= 5) return "bg-destructive shadow-destructive/50";
@@ -210,6 +212,7 @@ export default function DemoCallPage() {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [autoListen, setAutoListen] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (!isRunning) return;
@@ -272,6 +275,32 @@ export default function DemoCallPage() {
     const hasTTS = typeof window.speechSynthesis !== "undefined";
     setVoiceSupported(Boolean(SpeechRecognition) && hasTTS);
   }, []);
+
+  // Monitor network connectivity
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    
+    const handleOnline = () => {
+      if (voiceError && voiceError.includes("internet connection")) {
+        setVoiceError("");
+      }
+    };
+    
+    const handleOffline = () => {
+      if (isListening) {
+        setIsListening(false);
+        setVoiceError("Connection lost. Speech recognition requires an active internet connection.");
+      }
+    };
+    
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [voiceError, isListening]);
 
   const speakText = (text) => {
     if (typeof window === "undefined") return;
@@ -340,6 +369,18 @@ export default function DemoCallPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: nextMessages }),
       });
+      
+      // Check if response is OK before parsing JSON
+      if (!res.ok) {
+        let errorData;
+        try {
+          errorData = await res.json();
+        } catch {
+          errorData = { error: { message: `Server error: ${res.status} ${res.statusText}` } };
+        }
+        throw new Error(errorData?.error?.message || `Server error: ${res.status} ${res.statusText}`);
+      }
+      
       const data = await res.json();
       if (data.error) {
         throw new Error(
@@ -357,34 +398,69 @@ export default function DemoCallPage() {
       });
       speakText(data.reply);
     } catch (err) {
+      // Try to get more specific error information
+      let errorMessage = "I could not process your request.";
+      let detailedError = err.message || "Unknown error";
+      
+      // Check if it's a network error (server not reachable)
+      if (err.message?.includes("Failed to fetch") || err.message?.includes("NetworkError") || err.message?.includes("ERR_CONNECTION_REFUSED")) {
+        errorMessage = "Cannot connect to the backend server. Please check that the Node server is running on port 4000.";
+        detailedError = "Backend server is not reachable. Make sure it's running with 'npm start' in the api directory.";
+      } else if (err.message?.includes("GROQ_API_KEY")) {
+        errorMessage = "Backend configuration error: Groq API key is missing or invalid.";
+        detailedError = err.message + " Please add your Groq API key to api/.env file and restart the server.";
+      } else if (detailedError.includes("Groq")) {
+        errorMessage = "Error communicating with Groq AI service.";
+        detailedError = err.message;
+      } else {
+        errorMessage = "An error occurred while processing your request.";
+        detailedError = err.message || "Unknown error occurred.";
+      }
+      
       setChatMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "I could not reach the Groq backend right now. Please check that the Node server is running on port 4000.",
+          content: errorMessage,
         },
       ]);
       setChatResult({
         urgencyLevel: "non-urgent",
         numericUrgency: 3,
-        advice:
-          err.message ||
-          "Could not reach Groq backend. Check that the Node server is running on port 4000.",
+        advice: detailedError,
       });
     } finally {
       setChatLoading(false);
     }
   };
 
-  const handleVoiceCapture = () => {
+  const handleVoiceCapture = (isRetry = false) => {
     setVoiceError("");
     if (typeof window === "undefined") return;
+    
+    // Reset retry count if this is a manual click (not a retry)
+    if (!isRetry) {
+      setRetryCount(0);
+    }
+    
+    // Check network connectivity first
+    if (!navigator.onLine) {
+      setVoiceError("No internet connection. Speech recognition requires an active internet connection.");
+      return;
+    }
+    
+    // Check if we're on HTTPS or localhost (required for microphone access in some browsers)
+    const isSecureContext = window.isSecureContext || window.location.protocol === "https:" || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (!isSecureContext) {
+      setVoiceError("Microphone access requires HTTPS or localhost. Please access this page via HTTPS or localhost.");
+      return;
+    }
+    
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setVoiceSupported(false);
-      setVoiceError("Browser speech recognition is not available.");
+      setVoiceError("Browser speech recognition is not available. Please use Chrome, Edge, or another Chromium-based browser.");
       return;
     }
 
@@ -393,13 +469,35 @@ export default function DemoCallPage() {
       recognition.lang = "en-US";
       recognition.interimResults = true;
       recognition.maxAlternatives = 1;
+      recognition.continuous = false;
 
       setIsListening(true);
       setVoiceText("");
 
       let finalTranscript = "";
+      let hasError = false;
+      let isActive = true;
+
+      // Add timeout for network errors
+      const timeoutId = setTimeout(() => {
+        if (isActive && !hasError) {
+          recognition.stop();
+          setIsListening(false);
+          isActive = false;
+          if (retryCount < 2) {
+            setRetryCount(prev => prev + 1);
+            setVoiceError(`Connection timeout. Retrying... (${retryCount + 1}/2)`);
+            setTimeout(() => handleVoiceCapture(true), 1000);
+          } else {
+            setRetryCount(0);
+            setVoiceError("Network error: Cannot connect to speech recognition service. Troubleshooting: 1) Check internet connection, 2) Try refreshing the page, 3) Check if firewall/VPN is blocking Google services, 4) Try using Chrome/Edge browser.");
+          }
+        }
+      }, 10000); // 10 second timeout
 
       recognition.onresult = (event) => {
+        clearTimeout(timeoutId);
+        isActive = false;
         let aggregated = "";
         for (let i = 0; i < event.results.length; i++) {
           aggregated += event.results[i][0].transcript + " ";
@@ -409,21 +507,76 @@ export default function DemoCallPage() {
       };
 
       recognition.onerror = (event) => {
+        clearTimeout(timeoutId);
+        hasError = true;
+        isActive = false;
         setIsListening(false);
-        setVoiceError(event.error || "Speech recognition error.");
+        let errorMessage = "Speech recognition error.";
+        let shouldRetry = false;
+        
+        // Provide user-friendly error messages
+        switch (event.error) {
+          case "network":
+            if (retryCount < 2 && !isRetry) {
+              shouldRetry = true;
+              setRetryCount(prev => prev + 1);
+              errorMessage = `Network error. Retrying... (${retryCount + 1}/2)`;
+            } else {
+              setRetryCount(0);
+              errorMessage = "Network error: Cannot connect to speech recognition service. Troubleshooting tips: 1) Ensure you have an active internet connection, 2) Check if your firewall or VPN is blocking Google services, 3) Try refreshing the page, 4) Use Chrome or Edge browser for best compatibility, 5) If on corporate network, contact IT about speech recognition service access.";
+            }
+            break;
+          case "no-speech":
+            setRetryCount(0);
+            errorMessage = "No speech detected. Please speak clearly into your microphone and try again.";
+            break;
+          case "audio-capture":
+            setRetryCount(0);
+            errorMessage = "Microphone not found or access denied. Please check your microphone permissions in browser settings and ensure a microphone is connected.";
+            break;
+          case "not-allowed":
+            setRetryCount(0);
+            errorMessage = "Microphone permission denied. Click the lock icon in your browser's address bar and allow microphone access, then refresh the page.";
+            break;
+          case "aborted":
+            setRetryCount(0);
+            errorMessage = "Speech recognition was interrupted. Please try again.";
+            break;
+          case "service-not-allowed":
+            setRetryCount(0);
+            errorMessage = "Speech recognition service is not allowed. Please check your browser settings and ensure speech recognition is enabled.";
+            break;
+          default:
+            setRetryCount(0);
+            errorMessage = `Speech recognition error: ${event.error || "Unknown error"}. Please try again.`;
+        }
+        
+        setVoiceError(errorMessage);
+        
+        // Retry on network error
+        if (shouldRetry) {
+          setTimeout(() => handleVoiceCapture(true), 2000);
+        }
       };
 
       recognition.onend = () => {
+        clearTimeout(timeoutId);
+        isActive = false;
         setIsListening(false);
         if (finalTranscript && finalTranscript.trim()) {
+          setRetryCount(0); // Reset on success
           sendChatMessage(finalTranscript);
+        } else if (!hasError && !finalTranscript) {
+          // If it ended without error and no transcript, it might be a timeout
+          setRetryCount(0);
         }
       };
 
       recognition.start();
     } catch (e) {
       setIsListening(false);
-      setVoiceError("Unable to start microphone recognition.");
+      setRetryCount(0);
+      setVoiceError(`Unable to start microphone recognition: ${e.message || "Unknown error"}. Please check your microphone permissions and try again.`);
     }
   };
 
@@ -858,7 +1011,21 @@ export default function DemoCallPage() {
                   </div>
                 )}
                 {voiceError && (
-                  <p className="text-[0.7rem] text-destructive">{voiceError}</p>
+                  <div className="space-y-2 rounded border border-destructive/30 bg-destructive/5 p-2">
+                    <p className="text-[0.7rem] text-destructive">{voiceError}</p>
+                    {voiceError.includes("Network error") && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRetryCount(0);
+                          handleVoiceCapture(false);
+                        }}
+                        className="inline-flex items-center justify-center rounded border border-destructive/50 bg-destructive/10 px-3 py-1.5 text-[0.7rem] font-semibold text-destructive hover:bg-destructive/20"
+                      >
+                        Retry microphone
+                      </button>
+                    )}
+                  </div>
                 )}
 
                 {chatResult && (
