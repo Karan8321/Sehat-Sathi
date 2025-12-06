@@ -101,4 +101,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-export default app;
+// Export a handler function — Vercel invokes the default export as a function
+export default function handler(req, res) {
+  return app(req, res);
+}
