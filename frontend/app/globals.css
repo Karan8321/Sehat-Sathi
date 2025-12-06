@@ -1,0 +1,140 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+}
+
+:root {
+  --radius: 0.4rem;
+  /* charcoal + grey + olive theme */
+  --background: #101015; /* deep charcoal */
+  --foreground: #f5f5f7; /* near-white text */
+  --card: #18181f; /* slightly lighter surface */
+  --card-foreground: #f9fafb;
+  --popover: #1c1c24;
+  --popover-foreground: #f9fafb;
+  --primary: #8a8b3c; /* olive accent from swatch */
+  --primary-foreground: #050507;
+  --secondary: #2a2b33; /* grey secondary */
+  --secondary-foreground: #f5f5f7;
+  --muted: rgba(255, 255, 255, 0.45);
+  --muted-foreground: rgba(255, 255, 255, 0.7);
+  --accent: #b1b247; /* brighter olive highlight */
+  --accent-foreground: #050507;
+  --destructive: #ff4b4b;
+  --border: rgba(255, 255, 255, 0.06);
+  --input: rgba(255, 255, 255, 0.06);
+  --ring: rgba(177, 178, 71, 0.9);
+  --chart-1: #8a8b3c;
+  --chart-2: #b1b247;
+  --chart-3: #d1d46b;
+  --chart-4: #e3e89a;
+  --chart-5: #f3f6c7;
+  --sidebar: #14141b;
+  --sidebar-foreground: #f7f7fb;
+  --sidebar-primary: #8a8b3c;
+  --sidebar-primary-foreground: #050507;
+  --sidebar-accent: rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground: #f7f7fb;
+  --sidebar-border: rgba(255, 255, 255, 0.12);
+  --sidebar-ring: rgba(177, 178, 71, 0.8);
+}
+
+.dark {
+  --background: #08080c;
+  --foreground: #f3f3f6;
+  --card: #14141b;
+  --card-foreground: #f9fafb;
+  --popover: #1a1a22;
+  --popover-foreground: #f9fafb;
+  --primary: #a0a245;
+  --primary-foreground: #040406;
+  --secondary: #22232b;
+  --secondary-foreground: #f5f5f7;
+  --muted: rgba(255, 255, 255, 0.5);
+  --muted-foreground: rgba(255, 255, 255, 0.72);
+  --accent: #c2c55a;
+  --accent-foreground: #050507;
+  --destructive: #ff5c5c;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.12);
+  --ring: rgba(192, 195, 90, 0.9);
+  --chart-1: #a0a245;
+  --chart-2: #c2c55a;
+  --chart-3: #d7dc79;
+  --chart-4: #e6eaa2;
+  --chart-5: #f4f7cf;
+  --sidebar: #101018;
+  --sidebar-foreground: #f7f7fb;
+  --sidebar-primary: #a0a245;
+  --sidebar-primary-foreground: #040406;
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar-accent-foreground: #f7f7fb;
+  --sidebar-border: rgba(255, 255, 255, 0.16);
+  --sidebar-ring: rgba(192, 195, 90, 0.85);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(177, 178, 71, 0.15), transparent 45%),
+      radial-gradient(circle at 80% 100%, rgba(192, 195, 90, 0.12), transparent 40%),
+      linear-gradient(180deg, #101015 0%, #08080c 100%);
+    background-attachment: fixed;
+  }
+
+  body::before,
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at 60% 20%, rgba(255, 255, 255, 0.08), transparent 55%);
+    mix-blend-mode: screen;
+    opacity: 0.4;
+  }
+}
