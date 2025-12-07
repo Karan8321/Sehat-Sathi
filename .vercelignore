@@ -1,0 +1,8 @@
+# Ignore API routes and services - they're imported by api/index.js, not separate functions
+api/routes/
+api/services/
+api/*.csv
+api/*.md
+api/node_modules/
+api/package-lock.json
+

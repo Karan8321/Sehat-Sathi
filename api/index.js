@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import triageRouter from "./routes/triage.js";
-import hospitalsRouter from "./routes/hospitals.js";
-import hospitalMatchRouter from "./routes/hospitalMatch.js";
-import callRouter from "./routes/call.js";
-import alertRouter from "./routes/alert.js";
-import { triageAssistantConfig, analyzeTriageWithGroq } from "./vapiConfig.js";
+import triageRouter from "../backend/routes/triage.js";
+import hospitalsRouter from "../backend/routes/hospitals.js";
+import hospitalMatchRouter from "../backend/routes/hospitalMatch.js";
+import callRouter from "../backend/routes/call.js";
+import alertRouter from "../backend/routes/alert.js";
+import { triageAssistantConfig, analyzeTriageWithGroq } from "../backend/vapiConfig.js";
 
 // Load environment variables
 dotenv.config();

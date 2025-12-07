@@ -14,8 +14,8 @@ const nextConfig = {
       },
     ],
   },
-  // Handle static exports if needed
-  output: 'standalone',
+  // Remove standalone output for Vercel (it's for Docker deployments)
+  // output: 'standalone',
   // Handle environment variables
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || '/api',
