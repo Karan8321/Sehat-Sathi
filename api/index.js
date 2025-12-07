@@ -103,9 +103,10 @@ app.use((err, req, res, next) => {
 
 // Export a handler function — Vercel invokes the default export as a function
 // This handler receives the request and response from Vercel's serverless function
-export default async function handler(req, res) {
+export default function handler(req, res) {
   // Vercel passes the request and response directly to Express
-  return app(req, res);
+  // Note: app(req, res) doesn't return a promise, so we don't need async/await
+  app(req, res);
 }
 
 // For local development, start the server on port 4000
