@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "AI-powered medical triage system with voice capabilities",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "concurrently \"npm --prefix api run dev\" \"npm --prefix frontend run dev\"",
     "build": "npm --prefix api run build && npm --prefix frontend run build",
